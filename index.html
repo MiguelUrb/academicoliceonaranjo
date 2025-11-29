@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sistema Académico – Liceo Nacional Alirio José Naranjo Arias</title>
+  <meta name="description" content="Sistema para innovar y fortalecer la gestión académica del Liceo Nacional Alirio José Naranjo Arias, Yabuquiva, Estado Falcón, Venezuela." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎓</text></svg>">
+  <style>
+    :root{
+      --c1:#00B8A9;   /* turquesa */
+      --c2:#F8F32B;   /* amarillo vivo */
+      --c3:#F6416C;   /* rosa coral */
+      --c4:#3D5AF1;   /* azul intenso */
+      --c5:#12CBC4;   /* aqua */
+      --bg:#FDFCFB;   /* casi blanco */
+      --tx:#1b1b1f;
+      --muted:#6b7280;
+      --ok:#22c55e;
+      --warn:#f59e0b;
+      --err:#ef4444;
+      --card: #ffffff;
+      --shadow: 0 8px 24px rgba(0,0,0,.08);
+      --radius:16px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Oxygen", "Open Sans", sans-serif;
+      color:var(--tx);
+      background:
+        radial-gradient(1200px 500px at 10% 0%, rgba(0,184,169,.18), transparent 70%),
+        radial-gradient(900px 400px at 90% 10%, rgba(246,65,108,.16), transparent 70%),
+        linear-gradient(180deg, #fff, var(--bg));
+    }
+    header{
+      position:sticky;top:0;z-index:20;
+      background: linear-gradient(90deg, var(--c1), var(--c5), var(--c2));
+      color:#032b2b;
+      box-shadow: var(--shadow);
+    }
+    .wrap{max-width:1100px;margin:0 auto;padding:0 16px}
+    .brand{
+      display:flex;gap:12px;align-items:center;padding:14px 0;
+    }
+    .brand .emoji{font-size:32px}
+    .brand .title{font-weight:800;letter-spacing:.3px}
+    .brand .subtitle{font-size:13px;color:#053b3b}
+    nav.tabs{
+      display:flex;flex-wrap:wrap;gap:8px;padding:12px 0 16px;
+    }
+    nav.tabs button{
+      border:none;cursor:pointer;
+      padding:10px 14px;border-radius:999px;
+      background:#fff;color:#0b2a2a;font-weight:600;
+      box-shadow: 0 6px 14px rgba(0,0,0,.08);
+      transition:.2s transform ease,.2s box-shadow ease;
+    }
+    nav.tabs button.active{background:var(--c4);color:#fff}
+    nav.tabs button:hover{transform:translateY(-2px);box-shadow:0 10px 18px rgba(0,0,0,.12)}
+
+    .rolebar{
+      display:flex;justify-content:space-between;align-items:center;
+      gap:12px;padding:12px 0 16px;color:#053b3b;
+    }
+    .rolebar .tag{
+      display:inline-flex;align-items:center;gap:8px;
+      background:#fff;border:2px dashed rgba(0,0,0,.08);
+      border-radius:14px;padding:8px 12px;
+    }
+    .rolebar .tag .dot{
+      width:10px;height:10px;border-radius:50%;
+    }
+    .rolebar .btn{
+      border:none;cursor:pointer;padding:10px 14px;border-radius:10px;
+      font-weight:700;color:#072a2a;
+      background: linear-gradient(180deg,#fff,#f5f7f9);
+      box-shadow: var(--shadow);
+    }
+    .rolebar .btn.primary{background: linear-gradient(180deg, var(--c2), #ffd866);color:#2b2500}
+    .rolebar .btn.danger{background: linear-gradient(180deg, #ffd1d9, #ff8aa7);color:#3a0611}
+
+    main{padding:22px 0 60px}
+    .grid{
+      display:grid;gap:18px;
+      grid-template-columns: repeat(12,1fr);
+    }
+    .card{
+      grid-column: span 12;
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding:16px;
+    }
+    @media (min-width: 820px){
+      .card.half{grid-column: span 6}
+      .card.third{grid-column: span 4}
+    }
+    .card h2{
+      margin:6px 0 12px;font-size:20px;
+      display:flex;align-items:center;gap:8px;
+    }
+    .card .desc{color:var(--muted);margin-top:-4px}
+    .toolbar{
+      display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 14px;
+    }
+    .toolbar .btn{
+      border:none;border-radius:10px;padding:8px 10px;cursor:pointer;
+      background:#f1f5f9;color:#0e1f1f;font-weight:600;
+    }
+    .toolbar .btn.solid{background:var(--c1);color:#032b2b}
+    .toolbar .btn.warn{background:var(--c3);color:#fff}
+    .toolbar .btn.ok{background:var(--ok);color:#07290a}
+    .toolbar .btn.info{background:var(--c4);color:#fff}
+    .toolbar .btn:hover{filter:brightness(1.06)}
+
+    table{
+      width:100%;border-collapse:collapse;border-spacing:0;
+      background:#fff;border-radius:12px;overflow:hidden;
+    }
+    table thead th{
+      background:linear-gradient(180deg,#f9fafb,#f1f5f9);
+      text-align:left;padding:10px;font-size:13px;color:#374151;border-bottom:1px solid #e5e7eb;
+    }
+    table tbody td{
+      border-bottom:1px solid #eef2f7;padding:10px;font-size:14px;color:#111827;
+    }
+    table tr:hover td{background:#fafafa}
+
+    .flex{display:flex;gap:12px;flex-wrap:wrap}
+    .flex .field{flex:1 1 180px;min-width:200px}
+    .field label{font-weight:700;font-size:13px;color:#374151}
+    .field input,.field select,.field textarea{
+      width:100%;margin-top:6px;padding:10px;border-radius:10px;border:1px solid #e5e7eb;background:#fff;
+      font-size:14px;
+    }
+    .savebar{
+      display:flex;justify-content:flex-end;gap:8px;margin-top:10px;
+    }
+    .alert{
+      display:none;margin:10px 0;padding:10px 12px;border-radius:10px;font-weight:600;
+    }
+    .alert.ok{display:block;background:#e8fbee;color:#0a3b18;border:1px solid #b6f3c8}
+    .alert.err{display:block;background:#ffecec;color:#5d0b12;border:1px solid #ffc7cf}
+
+    .muted{color:var(--muted)}
+    .badge{
+      display:inline-block;padding:6px 10px;border-radius:999px;font-weight:700;font-size:12px;
+      background:#eef2ff;color:#1f2a78;
+    }
+    .note{
+      background:linear-gradient(180deg,#fff,#f9fafb);
+      border-left:6px solid var(--c4);
+      padding:12px;border-radius:10px;box-shadow:0 6px 14px rgba(0,0,0,.05);
+    }
+
+    /* Login modal */
+    .modal{
+      position:fixed;inset:0;background:rgba(0,0,0,.28);
+      display:grid;place-items:center;padding:16px;z-index:50;
+    }
+    .modal .box{
+      width:100%;max-width:520px;background:#fff;border-radius:16px;box-shadow:var(--shadow);padding:18px;
+      animation: pop .2s ease;
+    }
+    @keyframes pop{from{transform:scale(.98);opacity:.7}to{transform:scale(1);opacity:1}}
+    .modal h3{margin:8px 0 6px}
+    .modal .roles{display:flex;gap:8px;margin:8px 0 12px;flex-wrap:wrap}
+    .role{
+      border:2px solid #e5e7eb;border-radius:12px;padding:10px 12px;cursor:pointer;flex:1 1 220px;
+      display:flex;gap:10px;align-items:center;background:#fff;
+    }
+    .role.active{border-color:var(--c4);background:#eef2ff}
+    .role .icon{font-size:20px}
+    .modal .actions{display:flex;gap:8px;justify-content:flex-end}
+    .foot{
+      text-align:center;color:#083b3b;padding:28px 0 40px;font-size:13px;
+    }
+
+    /* Editable lock state */
+    [contenteditable="true"]{outline:2px dashed #9dd9d2;outline-offset:2px;background:#f7fffe}
+    .locked{opacity:.65;pointer-events:none}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <div class="brand">
+        <div class="emoji">🎓</div>
+        <div>
+          <div class="title">Liceo Nacional Alirio José Naranjo Arias</div>
+          <div class="subtitle">Yabuquiva, Estado Falcón – Sistema de Gestión Académica</div>
+        </div>
+      </div>
+
+      <nav class="tabs" id="tabs">
+        <button data-tab="inicio" class="active">Inicio</button>
+        <button data-tab="asistencia">Asistencia</button>
+        <button data-tab="notas">Notas</button>
+        <button data-tab="tareas">Tareas</button>
+        <button data-tab="examenes">Exámenes</button>
+        <button data-tab="material">Material de apoyo</button>
+        <button data-tab="informacion">Información del liceo</button>
+      </nav>
+
+      <div class="rolebar">
+        <div class="tag">
+          <span class="dot" id="roleDot" style="background:var(--c1)"></span>
+          <span id="roleText">Rol: Visitante</span>
+        </div>
+        <div>
+          <button class="btn primary" id="btnLogin">Acceder</button>
+          <button class="btn danger" id="btnLogout" style="display:none">Cerrar sesión</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <!-- Inicio -->
+    <section class="grid tab" id="tab-inicio">
+      <div class="card">
+        <h2>Bienvenida</h2>
+        <p class="desc">Este sistema apoya la innovación y fortalecimiento de la gestión académica del liceo. Inicia sesión para usar las funciones según tu rol.</p>
+        <div class="note" contenteditable="false" id="inicio_bienvenida">
+          <strong>Mensaje institucional:</strong>
+          <br>
+          Bienvenidos al año escolar. Este portal permite consultar información y, para docentes, actualizar asistencias, notas, tareas, exámenes y material de apoyo.
+        </div>
+        <div class="savebar">
+          <button class="toolbar btn ok" data-save="inicio_bienvenida" style="display:none">Guardar cambios</button>
+        </div>
+      </div>
+
+      <div class="card half">
+        <h2>Calendario rápido</h2>
+        <div class="flex">
+          <div class="field">
+            <label>Evento</label>
+            <input type="text" id="inicio_evento_titulo" placeholder="Ej: Consejo de docentes" />
+          </div>
+          <div class="field">
+            <label>Fecha</label>
+            <input type="date" id="inicio_evento_fecha" />
+          </div>
+        </div>
+        <div class="savebar">
+          <button class="toolbar btn solid" id="add_evento">Agregar</button>
+        </div>
+        <table>
+          <thead><tr><th>Título</th><th>Fecha</th><th>Acciones</th></tr></thead>
+          <tbody id="inicio_eventos_body"></tbody>
+        </table>
+      </div>
+
+      <div class="card half">
+        <h2>Comunicados</h2>
+        <div class="flex">
+          <div class="field">
+            <label>Título</label>
+            <input type="text" id="com_titulo" placeholder="Ej: Jornada de limpieza" />
+          </div>
+          <div class="field">
+            <label>Detalle</label>
+            <textarea id="com_detalle" rows="3" placeholder="Descripción del comunicado"></textarea>
+          </div>
+        </div>
+        <div class="savebar">
+          <button class="toolbar btn solid" id="add_comunicado">Publicar</button>
+        </div>
+        <table>
+          <thead><tr><th>Título</th><th>Detalle</th><th>Acciones</th></tr></thead>
+          <tbody id="comunicados_body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Asistencia -->
+    <section class="grid tab" id="tab-asistencia" style="display:none">
+      <div class="card">
+        <h2>Registro de asistencia</h2>
+        <p class="desc">Docentes pueden registrar asistencia por curso y fecha. Estudiantes solo pueden visualizar.</p>
+
+        <div class="flex">
+          <div class="field">
+            <label>Curso / Sección</label>
+            <input id="as_curso" type="text" placeholder="Ej: 4to Año - Sección B">
+          </div>
+          <div class="field">
+            <label>Fecha</label>
+            <input id="as_fecha" type="date">
+          </div>
+        </div>
+
+        <div class="flex">
+          <div class="field">
+            <label>Estudiante</label>
+            <input id="as_nombre" type="text" placeholder="Nombre y apellido">
+          </div>
+          <div class="field">
+            <label>Estado</label>
+            <select id="as_estado">
+              <option value="Presente">Presente</option>
+              <option value="Ausente">Ausente</option>
+              <option value="Retardo">Retardo</option>
+              <option value="Justificado">Justificado</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="savebar">
+          <button class="toolbar btn solid" id="as_add">Registrar</button>
+        </div>
+
+        <table>
+          <thead>
+            <tr><th>Curso</th><th>Fecha</th><th>Estudiante</th><th>Estado</th><th>Acciones</th></tr>
+          </thead>
+          <tbody id="as_body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Notas -->
+    <section class="grid tab" id="tab-notas" style="display:none">
+      <div class="card">
+        <h2>Gestión de notas</h2>
+        <p class="desc">Registra calificaciones por materia y periodo.</p>
+
+        <div class="flex">
+          <div class="field">
+            <label>Materia</label>
+            <input id="no_materia" type="text" placeholder="Ej: Matemáticas">
+          </div>
+          <div class="field">
+            <label>Periodo</label>
+            <input id="no_periodo" type="text" placeholder="Ej: 1er Lapso">
+          </div>
+          <div class="field">
+            <label>Estudiante</label>
+            <input id="no_estudiante" type="text" placeholder="Nombre y apellido">
+          </div>
+          <div class="field">
+            <label>Calificación</label>
+            <input id="no_nota" type="number" min="0" max="20" step="0.1" placeholder="0 - 20">
+          </div>
+        </div>
+
+        <div class="savebar">
+          <button class="toolbar btn solid" id="no_add">Guardar nota</button>
+        </div>
+
+        <table>
+          <thead>
+            <tr><th>Materia</th><th>Periodo</th><th>Estudiante</th><th>Nota</th><th>Acciones</th></tr>
+          </thead>
+          <tbody id="no_body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Tareas -->
+    <section class="grid tab" id="tab-tareas" style="display:none">
+      <div class="card">
+        <h2>Tareas asignadas</h2>
+        <p class="desc">Crea, edita y publica tareas por curso.</p>
+
+        <div class="flex">
+          <div class="field">
+            <label>Curso / Sección</label>
+            <input id="ta_curso" type="text" placeholder="Ej: 3er Año - A">
+          </div>
+          <div class="field">
+            <label>Título</label>
+            <input id="ta_titulo" type="text" placeholder="Ej: Lectura capítulo 2">
+          </div>
+          <div class="field">
+            <label>Fecha de entrega</label>
+            <input id="ta_entrega" type="date">
+          </div>
+        </div>
+        <div class="field">
+          <label>Descripción</label>
+          <textarea id="ta_desc" rows="3" placeholder="Instrucciones de la tarea"></textarea>
+        </div>
+
+        <div class="savebar">
+          <button class="toolbar btn solid" id="ta_add">Publicar tarea</button>
+        </div>
+
+        <table>
+          <thead>
+            <tr><th>Curso</th><th>Título</th><th>Entrega</th><th>Descripción</th><th>Acciones</th></tr>
+          </thead>
+          <tbody id="ta_body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Exámenes -->
+    <section class="grid tab" id="tab-examenes" style="display:none">
+      <div class="card">
+        <h2>Resultados de exámenes</h2>
+        <p class="desc">Registra resultados por materia y fecha.</p>
+
+        <div class="flex">
+          <div class="field">
+            <label>Materia</label>
+            <input id="ex_materia" type="text" placeholder="Ej: Física">
+          </div>
+          <div class="field">
+            <label>Fecha</label>
+            <input id="ex_fecha" type="date">
+          </div>
+          <div class="field">
+            <label>Estudiante</label>
+            <input id="ex_estudiante" type="text" placeholder="Nombre y apellido">
+          </div>
+          <div class="field">
+            <label>Resultado</label>
+            <input id="ex_resultado" type="number" min="0" max="20" step="0.1" placeholder="0 - 20">
+          </div>
+        </div>
+
+        <div class="savebar">
+          <button class="toolbar btn solid" id="ex_add">Guardar resultado</button>
+        </div>
+
+        <table>
+          <thead>
+            <tr><th>Materia</th><th>Fecha</th><th>Estudiante</th><th>Resultado</th><th>Acciones</th></tr>
+          </thead>
+          <tbody id="ex_body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Material de apoyo -->
+    <section class="grid tab" id="tab-material" style="display:none">
+      <div class="card">
+        <h2>Material de apoyo</h2>
+        <p class="desc">Comparte enlaces, descripciones y referencia de materiales.</p>
+
+        <div class="flex">
+          <div class="field">
+            <label>Materia</label>
+            <input id="ma_materia" type="text" placeholder="Ej: Química">
+          </div>
+          <div class="field">
+            <label>Título</label>
+            <input id="ma_titulo" type="text" placeholder="Ej: Guía de laboratorio">
+          </div>
+          <div class="field">
+            <label>Enlace</label>
+            <input id="ma_link" type="url" placeholder="https://...">
+          </div>
+        </div>
+        <div class="field">
+          <label>Descripción</label>
+          <textarea id="ma_desc" rows="3" placeholder="Resumen del material"></textarea>
+        </div>
+
+        <div class="savebar">
+          <button class="toolbar btn solid" id="ma_add">Agregar material</button>
+        </div>
+
+        <table>
+          <thead>
+            <tr><th>Materia</th><th>Título</th><th>Enlace</th><th>Descripción</th><th>Acciones</th></tr>
+          </thead>
+          <tbody id="ma_body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Información del liceo -->
+    <section class="grid tab" id="tab-informacion" style="display:none">
+      <div class="card">
+        <h2>Información institucional</h2>
+        <p class="desc">Historia, misión y datos de contacto del liceo.</p>
+
+        <div id="info_historia" class="note" contenteditable="false">
+          <strong>Historia:</strong><br>
+          Fundado para servir a la comunidad de Yabuquiva, el liceo promueve la educación con valores, ciencia y cultura.
+        </div>
+        <div class="savebar">
+          <button class="toolbar btn ok" data-save="info_historia" style="display:none">Guardar cambios</button>
+        </div>
+
+        <div id="info_mision" class="note" contenteditable="false" style="border-left-color: var(--c1)">
+          <strong>Misión:</strong><br>
+          Formar bachilleres integrales, críticos y comprometidos con su entorno social.
+        </div>
+        <div class="savebar">
+          <button class="toolbar btn ok" data-save="info_mision" style="display:none">Guardar cambios</button>
+        </div>
+
+        <div class="card" style="margin-top:12px">
+          <h2>Contacto</h2>
+          <div class="flex">
+            <div class="field">
+              <label>Dirección</label>
+              <input id="info_dir" type="text" placeholder="Yabuquiva, Estado Falcón">
+            </div>
+            <div class="field">
+              <label>Teléfono</label>
+              <input id="info_tel" type="text" placeholder="+58 ...">
+            </div>
+            <div class="field">
+              <label>Correo</label>
+              <input id="info_correo" type="email" placeholder="contacto@liceo.edu.ve">
+            </div>
+          </div>
+          <div class="savebar">
+            <button class="toolbar btn solid" id="info_save_contacto">Guardar contacto</button>
+          </div>
+
+          <table>
+            <thead><tr><th>Dirección</th><th>Teléfono</th><th>Correo</th></tr></thead>
+            <tbody id="info_contacto_body"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <div class="foot">
+      Sistema académico del Liceo Nacional Alirio José Naranjo Arias · Hecho con HTML, CSS y JS (localStorage).
+    </div>
+  </main>
+
+  <!-- Modal de acceso -->
+  <div class="modal" id="loginModal" style="display:grid">
+    <div class="box">
+      <h3>Acceso al sistema</h3>
+      <p class="muted">Selecciona tu rol y, si eres docente, ingresa credenciales.</p>
+
+      <div class="roles">
+        <div class="role active" data-select-role="estudiante">
+          <div class="icon">🧑‍🎓</div>
+          <div>
+            <div><strong>Estudiante</strong></div>
+            <div class="muted">Acceso de lectura</div>
+          </div>
+        </div>
+        <div class="role" data-select-role="docente">
+          <div class="icon">🧑‍🏫</div>
+          <div>
+            <div><strong>Docente</strong></div>
+            <div class="muted">Puede crear y editar</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="credBlock" style="display:none">
+        <div class="flex">
+          <div class="field">
+            <label>Usuario docente</label>
+            <input id="auth_user" type="text" placeholder="Ej: docente" autocomplete="username">
+          </div>
+          <div class="field">
+            <label>Contraseña</label>
+            <input id="auth_pass" type="password" placeholder="••••••••" autocomplete="current-password">
+          </div>
+        </div>
+        <p class="muted">Credenciales por defecto: usuario <strong>docente</strong>, contraseña <strong>naranjo</strong>. Cámbialas en el código si lo deseas.</p>
+      </div>
+
+      <div id="loginAlert" class="alert err" style="display:none">Credenciales inválidas. Intenta nuevamente.</div>
+
+      <div class="actions">
+        <button class="btn" id="cancelLogin">Cancelar</button>
+        <button class="btn primary" id="doLogin">Entrar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- Utilidades de almacenamiento ---
+    const store = {
+      get(key, def){ try{ return JSON.parse(localStorage.getItem(key)) ?? def; }catch{ return def; } },
+      set(key, val){ localStorage.setItem(key, JSON.stringify(val)); },
+      del(key){ localStorage.removeItem(key); }
+    };
+
+    // --- Estado de sesión ---
+    const state = {
+      role: 'visitante', // 'docente' | 'estudiante' | 'visitante'
+      user: null
+    };
+
+    const roleText = document.getElementById('roleText');
+    const roleDot = document.getElementById('roleDot');
+    const btnLogin = document.getElementById('btnLogin');
+    const btnLogout = document.getElementById('btnLogout');
+    const loginModal = document.getElementById('loginModal');
+    const loginAlert = document.getElementById('loginAlert');
+    const credBlock = document.getElementById('credBlock');
+    const doLogin = document.getElementById('doLogin');
+    const cancelLogin = document.getElementById('cancelLogin');
+
+    // Restaurar sesión si existe
+    const savedSession = store.get('session', null);
+    if(savedSession){
+      state.role = savedSession.role;
+      state.user = savedSession.user;
+      updateRoleUI();
+      loginModal.style.display = 'none';
+    }
+
+    // --- Tabs ---
+    const tabsNav = document.getElementById('tabs');
+    const tabButtons = Array.from(tabsNav.querySelectorAll('button'));
+    const tabs = {
+      inicio: document.getElementById('tab-inicio'),
+      asistencia: document.getElementById('tab-asistencia'),
+      notas: document.getElementById('tab-notas'),
+      tareas: document.getElementById('tab-tareas'),
+      examenes: document.getElementById('tab-examenes'),
+      material: document.getElementById('tab-material'),
+      informacion: document.getElementById('tab-informacion'),
+    };
+    tabsNav.addEventListener('click', (e)=>{
+      if(e.target.tagName !== 'BUTTON') return;
+      const id = e.target.dataset.tab;
+      tabButtons.forEach(b=>b.classList.toggle('active', b.dataset.tab===id));
+      Object.entries(tabs).forEach(([k,el])=>el.style.display = (k===id) ? '' : 'none');
+    });
+
+    // --- Selección de rol en modal ---
+    let selectedRole = 'estudiante';
+    document.querySelectorAll('.role').forEach(el=>{
+      el.addEventListener('click', ()=>{
+        document.querySelectorAll('.role').forEach(r=>r.classList.remove('active'));
+        el.classList.add('active');
+        selectedRole = el.dataset.selectRole;
+        credBlock.style.display = (selectedRole === 'docente') ? 'block' : 'none';
+        loginAlert.style.display = 'none';
+      });
+    });
+
+    // --- Acciones de login/logout ---
+    btnLogin.addEventListener('click', ()=>{ loginModal.style.display = 'grid'; });
+    cancelLogin.addEventListener('click', ()=>{ loginModal.style.display = 'none'; });
+    btnLogout.addEventListener('click', ()=>{
+      state.role = 'visitante'; state.user = null;
+      store.del('session');
+      updateRoleUI();
+      lockAllEditing(true);
+      loginModal.style.display = 'grid';
+    });
+
+    doLogin.addEventListener('click', ()=>{
+      loginAlert.style.display = 'none';
+      if(selectedRole === 'estudiante'){
+        state.role = 'estudiante'; state.user = 'estudiante';
+        store.set('session', {role: state.role, user: state.user});
+        loginModal.style.display = 'none';
+        updateRoleUI();
+        lockAllEditing(true);
+        return;
+      }
+      // Validación simple para docente (cámbiala si deseas)
+      const u = document.getElementById('auth_user').value.trim();
+      const p = document.getElementById('auth_pass').value.trim();
+      const OK_USER = store.get('doc_user','docente');
+      const OK_PASS = store.get('doc_pass','naranjo');
+      if(u === OK_USER && p === OK_PASS){
+        state.role = 'docente'; state.user = u;
+        store.set('session', {role: state.role, user: state.user});
+        loginModal.style.display = 'none';
+        updateRoleUI();
+        lockAllEditing(false);
+      }else{
+        loginAlert.style.display = 'block';
+      }
+    });
+
+    function updateRoleUI(){
+      roleText.textContent = 'Rol: ' + (state.role.charAt(0).toUpperCase() + state.role.slice(1));
+      roleDot.style.background = state.role === 'docente' ? 'var(--ok)'
+                                 : state.role === 'estudiante' ? 'var(--c1)' : 'var(--warn)';
+      btnLogin.style.display = state.role === 'visitante' ? '' : 'none';
+      btnLogout.style.display = state.role !== 'visitante' ? '' : 'none';
+    }
+
+    // --- Bloqueo/permiso de edición ---
+    const editableBlocks = [
+      'inicio_bienvenida','info_historia','info_mision'
+    ];
+    function lockAllEditing(lock){
+      editableBlocks.forEach(id=>{
+        const el = document.getElementById(id);
+        if(!el) return;
+        el.setAttribute('contenteditable', (!lock && state.role==='docente') ? 'true' : 'false');
+        const btn = document.querySelector(`[data-save="${id}"]`);
+        if(btn) btn.style.display = (!lock && state.role==='docente') ? '' : 'none';
+      });
+      // Bloquear botones de creación/edición si no es docente
+      const createBtns = document.querySelectorAll('#add_evento,#add_comunicado,#as_add,#no_add,#ta_add,#ex_add,#ma_add,#info_save_contacto');
+      createBtns.forEach(b=>{
+        b.classList.toggle('locked', state.role!=='docente');
+      });
+    }
+    lockAllEditing(state.role!=='docente');
+
+    // --- Guardar bloques editables ---
+    document.querySelectorAll('[data-save]').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        if(state.role!=='docente') return;
+        const id = btn.getAttribute('data-save');
+        const el = document.getElementById(id);
+        store.set('block:' + id, el.innerHTML);
+        flashOK(el);
+      });
+    });
+    // Cargar contenido guardado
+    editableBlocks.forEach(id=>{
+      const saved = store.get('block:' + id, null);
+      if(saved){ document.getElementById(id).innerHTML = saved; }
+    });
+
+    function flashOK(refEl){
+      const alert = document.createElement('div');
+      alert.className = 'alert ok';
+      alert.textContent = 'Cambios guardados';
+      refEl.insertAdjacentElement('afterend', alert);
+      setTimeout(()=>{ alert.remove(); }, 1800);
+    }
+
+    // --- Tab: Inicio / Eventos ---
+    const eventosBody = document.getElementById('inicio_eventos_body');
+    const eventos = store.get('eventos', []);
+    renderList(eventosBody, eventos, ['titulo','fecha'], 'eventos');
+
+    document.getElementById('add_evento').addEventListener('click', ()=>{
+      if(state.role!=='docente') return;
+      const t = document.getElementById('inicio_evento_titulo').value.trim();
+      const f = document.getElementById('inicio_evento_fecha').value;
+      if(!t || !f) return;
+      eventos.push({titulo:t,fecha:f});
+      store.set('eventos', eventos);
+      renderList(eventosBody, eventos, ['titulo','fecha'], 'eventos');
+      clearInputs(['inicio_evento_titulo','inicio_evento_fecha']);
+    });
+
+    // --- Tab: Comunicados ---
+    const comunicadosBody = document.getElementById('comunicados_body');
+    const comunicados = store.get('comunicados', []);
+    renderList(comunicadosBody, comunicados, ['titulo','detalle'], 'comunicados');
+
+    document.getElementById('add_comunicado').addEventListener('click', ()=>{
+      if(state.role!=='docente') return;
+      const t = document.getElementById('com_titulo').value.trim();
+      const d = document.getElementById('com_detalle').value.trim();
+      if(!t || !d) return;
+      comunicados.push({titulo:t,detalle:d});
+      store.set('comunicados', comunicados);
+      renderList(comunicadosBody, comunicados, ['titulo','detalle'], 'comunicados');
+      clearInputs(['com_titulo','com_detalle']);
+    });
+
+    // --- Tab: Asistencia ---
+    const asBody = document.getElementById('as_body');
+    const asistencias = store.get('asistencias', []);
+    renderList(asBody, asistencias, ['curso','fecha','nombre','estado'], 'asistencias');
+
+    document.getElementById('as_add').addEventListener('click', ()=>{
+      if(state.role!=='docente') return;
+      const curso = document.getElementById('as_curso').value.trim();
+      const fecha = document.getElementById('as_fecha').value;
+      const nombre = document.getElementById('as_nombre').value.trim();
+      const estadoSel = document.getElementById('as_estado').value;
+      if(!curso || !fecha || !nombre) return;
+      asistencias.push({curso,fecha,nombre,estado:estadoSel});
+      store.set('asistencias', asistencias);
+      renderList(asBody, asistencias, ['curso','fecha','nombre','estado'], 'asistencias');
+      clearInputs(['as_curso','as_fecha','as_nombre']);
+    });
+
+    // --- Tab: Notas ---
+    const noBody = document.getElementById('no_body');
+    const notas = store.get('notas', []);
+    renderList(noBody, notas, ['materia','periodo','estudiante','nota'], 'notas');
+
+    document.getElementById('no_add').addEventListener('click', ()=>{
+      if(state.role!=='docente') return;
+      const materia = document.getElementById('no_materia').value.trim();
+      const periodo = document.getElementById('no_periodo').value.trim();
+      const estudiante = document.getElementById('no_estudiante').value.trim();
+      const nota = parseFloat(document.getElementById('no_nota').value);
+      if(!materia || !periodo || !estudiante || isNaN(nota)) return;
+      notas.push({materia,periodo,estudiante,nota});
+      store.set('notas', notas);
+      renderList(noBody, notas, ['materia','periodo','estudiante','nota'], 'notas');
+      clearInputs(['no_materia','no_periodo','no_estudiante','no_nota']);
+    });
+
+    // --- Tab: Tareas ---
+    const taBody = document.getElementById('ta_body');
+    const tareas = store.get('tareas', []);
+    renderList(taBody, tareas, ['curso','titulo','entrega','desc'], 'tareas');
+
+    document.getElementById('ta_add').addEventListener('click', ()=>{
+      if(state.role!=='docente') return;
+      const curso = document.getElementById('ta_curso').value.trim();
+      const titulo = document.getElementById('ta_titulo').value.trim();
+      const entrega = document.getElementById('ta_entrega').value;
+      const desc = document.getElementById('ta_desc').value.trim();
+      if(!curso || !titulo || !entrega || !desc) return;
+      tareas.push({curso,titulo,entrega,desc});
+      store.set('tareas', tareas);
+      renderList(taBody, tareas, ['curso','titulo','entrega','desc'], 'tareas');
+      clearInputs(['ta_curso','ta_titulo','ta_entrega','ta_desc']);
+    });
+
+    // --- Tab: Exámenes ---
+    const exBody = document.getElementById('ex_body');
+    const examenes = store.get('examenes', []);
+    renderList(exBody, examenes, ['materia','fecha','estudiante','resultado'], 'examenes');
+
+    document.getElementById('ex_add').addEventListener('click', ()=>{
+      if(state.role!=='docente') return;
+      const materia = document.getElementById('ex_materia').value.trim();
+      const fecha = document.getElementById('ex_fecha').value;
+      const estudiante = document.getElementById('ex_estudiante').value.trim();
+      const resultado = parseFloat(document.getElementById('ex_resultado').value);
+      if(!materia || !fecha || !estudiante || isNaN(resultado)) return;
+      examenes.push({materia,fecha,estudiante,resultado});
+      store.set('examenes', examenes);
+      renderList(exBody, examenes, ['materia','fecha','estudiante','resultado'], 'examenes');
+      clearInputs(['ex_materia','ex_fecha','ex_estudiante','ex_resultado']);
+    });
+
+    // --- Tab: Material ---
+    const maBody = document.getElementById('ma_body');
+    const materiales = store.get('materiales', []);
+    renderList(maBody, materiales, ['materia','titulo','link','desc'], 'materiales');
+
+    document.getElementById('ma_add').addEventListener('click', ()=>{
+      if(state.role!=='docente') return;
+      const materia = document.getElementById('ma_materia').value.trim();
+      const titulo = document.getElementById('ma_titulo').value.trim();
+      const link = document.getElementById('ma_link').value.trim();
+      const desc = document.getElementById('ma_desc').value.trim();
+      if(!materia || !titulo || !link || !desc) return;
+      materiales.push({materia,titulo,link,desc});
+      store.set('materiales', materiales);
+      renderList(maBody, materiales, ['materia','titulo','link','desc'], 'materiales');
+      clearInputs(['ma_materia','ma_titulo','ma_link','ma_desc']);
+    });
+
+    // --- Información de contacto ---
+    const infoBody = document.getElementById('info_contacto_body');
+    const contacto = store.get('contacto', []);
+    renderList(infoBody, contacto, ['dir','tel','correo'], 'contacto');
+
+    document.getElementById('info_save_contacto').addEventListener('click', ()=>{
+      if(state.role!=='docente') return;
+      const dir = document.getElementById('info_dir').value.trim();
+      const tel = document.getElementById('info_tel').value.trim();
+      const correo = document.getElementById('info_correo').value.trim();
+      if(!dir || !tel || !correo) return;
+      contacto.length = 0; // mantener un solo registro
+      contacto.push({dir,tel,correo});
+      store.set('contacto', contacto);
+      renderList(infoBody, contacto, ['dir','tel','correo'], 'contacto');
+    });
+
+    // --- Render genérico con edición/eliminación ---
+    function renderList(tbody, arr, cols, key){
+      tbody.innerHTML = '';
+      arr.forEach((item, idx)=>{
+        const tr = document.createElement('tr');
+        cols.forEach(c=>{
+          const td = document.createElement('td');
+          if(c==='link'){
+            const a = document.createElement('a');
+            a.href = item[c]; a.textContent = 'Abrir enlace'; a.target = '_blank'; a.rel = 'noopener noreferrer';
+            td.appendChild(a);
+          }else{
+            td.textContent = item[c];
+          }
+          tr.appendChild(td);
+        });
+        const actions = document.createElement('td');
+        const btnEdit = document.createElement('button');
+        btnEdit.className = 'toolbar btn info';
+        btnEdit.textContent = 'Editar';
+        btnEdit.addEventListener('click', ()=>{
+          if(state.role!=='docente') return;
+          openInlineEdit(tr, item, cols, (updated)=>{
+            arr[idx] = updated; store.set(key, arr); renderList(tbody, arr, cols, key);
+          });
+        });
+
+        const btnDel = document.createElement('button');
+        btnDel.className = 'toolbar btn warn';
+        btnDel.textContent = 'Eliminar';
+        btnDel.addEventListener('click', ()=>{
+          if(state.role!=='docente') return;
+          arr.splice(idx,1); store.set(key, arr); renderList(tbody, arr, cols, key);
+        });
+
+        if(state.role==='docente'){
+          actions.appendChild(btnEdit);
+          actions.appendChild(btnDel);
+        }else{
+          actions.textContent = '—';
+          actions.classList.add('muted');
+        }
+        tr.appendChild(actions);
+        tbody.appendChild(tr);
+      });
+      if(arr.length===0){
+        const tr = document.createElement('tr');
+        const td = document.createElement('td');
+        td.colSpan = cols.length+1;
+        td.innerHTML = '<span class="muted">Sin registros aún</span>';
+        tr.appendChild(td);
+        tbody.appendChild(tr);
+      }
+    }
+
+    function openInlineEdit(tr, item, cols, onSave){
+      if(state.role!=='docente') return;
+      tr.innerHTML = '';
+      const updated = {...item};
+      cols.forEach(c=>{
+        const td = document.createElement('td');
+        const input = document.createElement(c==='desc' || c==='detalle' ? 'textarea' : 'input');
+        input.value = item[c];
+        input.style.width = '100%';
+        td.appendChild(input);
+        tr.appendChild(td);
+        input.addEventListener('input', ()=>{ updated[c] = input.value; });
+      });
+      const actions = document.createElement('td');
+      const btnOk = document.createElement('button');
+      btnOk.className = 'toolbar btn ok';
+      btnOk.textContent = 'Guardar';
+      btnOk.addEventListener('click', ()=> onSave(updated));
+      const btnCancel = document.createElement('button');
+      btnCancel.className = 'toolbar btn';
+      btnCancel.textContent = 'Cancelar';
+      btnCancel.addEventListener('click', ()=>{
+        // Volver a render normal
+        const tbody = tr.parentElement;
+        const rows = Array.from(tbody.children);
+        const idx = rows.indexOf(tr);
+        const key = findKeyByTbody(tbody);
+        renderList(tbody, store.get(key, []), cols, key);
+      });
+      actions.appendChild(btnOk); actions.appendChild(btnCancel);
+      tr.appendChild(actions);
+    }
+
+    function findKeyByTbody(tbody){
+      if(tbody.id==='inicio_eventos_body') return 'eventos';
+      if(tbody.id==='comunicados_body') return 'comunicados';
+      if(tbody.id==='as_body') return 'asistencias';
+      if(tbody.id==='no_body') return 'notas';
+      if(tbody.id==='ta_body') return 'tareas';
+      if(tbody.id==='ex_body') return 'examenes';
+      if(tbody.id==='ma_body') return 'materiales';
+      if(tbody.id==='info_contacto_body') return 'contacto';
+      return '';
+    }
+
+    function clearInputs(ids){ ids.forEach(id=>{ const el = document.getElementById(id); if(el) el.value=''; }); }
+
+    // --- Ayuda: atajos de teclado ---
+    document.addEventListener('keydown', (e)=>{
+      if(e.ctrlKey && e.key.toLowerCase()==='s'){
+        e.preventDefault();
+        const focused = document.activeElement;
+        if(focused && focused.getAttribute('contenteditable')==='true'){
+          const id = editableBlocks.find(id=>document.getElementById(id)===focused);
+          if(id){ store.set('block:'+id, focused.innerHTML); flashOK(focused); }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
